@@ -3,6 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import connectDB from './config/db.js';
 import userRoutes from './routes/authRoutes.js'
+import productRoutes from './routes/productRoutes.js'
 dotenv.config();
 
 connectDB()
@@ -18,7 +19,9 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth',userRoutes)
 app.use('/api/products',productRoutes)
-app.use()
+// app.use('/api/orders',orderRoutes)
+// app.use('/api/payment',paymentRoutes)
+// app.use('/api/analytics',analyticsRoutes)
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
