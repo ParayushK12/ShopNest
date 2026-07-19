@@ -1,6 +1,6 @@
-# 🛍️ ShopNest - Premium E-Commerce Application
+# 🛍️ season. - Premium E-Commerce Application
 
-ShopNest is a modern, responsive, and full-featured MERN (MongoDB, Express, React, Node.js) stack e-commerce web application. Designed with high performance, elegant UI transitions, and modularity in mind, ShopNest delivers a seamless shopping experience for consumers and a comprehensive management panel for administrators.
+season. is a modern, responsive, and full-featured MERN (MongoDB, Express, React, Node.js) stack e-commerce web application. Designed with high performance, elegant UI transitions, and modularity in mind, season. delivers a seamless shopping experience for consumers and a comprehensive management panel for administrators.
 
 ---
 
@@ -45,7 +45,7 @@ ShopNest is a modern, responsive, and full-featured MERN (MongoDB, Express, Reac
 ## 📂 Project Structure
 
 ```text
-ShopNest/
+season. (ShopNest)/
 ├── backend/                  # Node.js + Express API Server
 │   ├── config/               # Database and 3rd-party service integrations
 │   ├── controllers/          # Business logic handlers for API endpoints
@@ -98,7 +98,7 @@ Create a `.env` file inside the `/backend` directory and configure the following
 
 ## 🚀 Getting Started
 
-Follow these steps to run ShopNest locally on your machine:
+Follow these steps to run season. locally on your machine:
 
 ### 1. Prerequisites
 Ensure you have the following installed on your machine:
