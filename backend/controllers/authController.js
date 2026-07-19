@@ -16,7 +16,7 @@ export const registerUser = async (req, res) => {
     if (existingUser) {
       return res
         .status(400)
-        .json({ message: "user will this email already exists" });
+        .json({ message: "An account with this email already exists." });
     }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -85,3 +85,24 @@ export const getUsers = async(req, res) => {
       res.status(500).json({message:"internal server error"})
     }
 }
+
+export const contactSupport = async (req, res) => {
+  const { name, email, message } = req.body;
+  try {
+    const adminEmail = process.env.GMAIL_USER;
+    const subject = `Support Request from ${name}`;
+    const emailBody = `
+      <h3>New Support Request Received</h3>
+      <p><strong>Name:</strong> ${name}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Message:</strong></p>
+      <p>${message.replace(/\n/g, '<br>')}</p>
+    `;
+
+    await sendMail(adminEmail, subject, emailBody);
+    res.status(200).json({ message: "Support request sent successfully" });
+  } catch (error) {
+    console.error("Error sending support request:", error);
+    res.status(500).json({ message: "internal server error" });
+  }
+};

@@ -1,0 +1,10 @@
+{
+  "name": "Levi's 501 Original Cropped Jeans",
+  "price": 8999,
+  "description": "The classic Levi's 501 jean with a modern cropped straight leg. Crafted from durable non-stretch cotton denim in a classic indigo wash.",
+  "category": "Denims",
+  "stock": 25,
+  "imageURL": "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=600&auto=format&fit=crop&q=80",
+  "rating": 4.7,
+  "numReviews": 12
+}

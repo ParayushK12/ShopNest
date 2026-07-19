@@ -10,11 +10,11 @@ const protect = async(req,res,next) => {
             req.user = await User.findById(decoded.id).select('-password')
             next();
         } catch (error) {
-            res.status(400).json({message: 'not authorized, token failed'})
+            return res.status(401).json({message: 'Your session is invalid or has expired. Please sign in again.'})
         }
     }
     if(!token){
-        res.status(400).json({message: 'not authorized, no token'})
+        return res.status(401).json({message: 'Please sign in to continue.'})
     }
 }
 

@@ -1,0 +1,35 @@
+{
+  "name": "shopnest",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [
+    "microservice"
+  ],
+  "homepage": "https://github.com/ParayushK12/ShopNest#readme",
+  "bugs": {
+    "url": "https://github.com/ParayushK12/ShopNest/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ParayushK12/ShopNest.git"
+  },
+  "license": "ISC",
+  "author": "parayush",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "install-server": "cd backend && npm install",
+    "install-client": "cd frontend && npm install",
+    "install": "npm run install-server && npm run install-client",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev-server": "cd backend && npm run dev",
+    "dev-client": "cd frontend && npm start",
+    "dev": "concurrently \"npm run dev-server\" \"npm run dev-client\"",
+    "build-server": "echo \"No build step for backend\"",
+    "build-client": "cd frontend && npm run build",
+    "build": "npm run build-server && npm run build-client"
+  },
+  "dependencies": {
+    "concurrently": "^10.0.3"
+  }
+}

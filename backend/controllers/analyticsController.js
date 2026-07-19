@@ -13,6 +13,7 @@ export const getAdminStats = async (req, res) => {
         const totalShippedOrders = await Order.countDocuments({ status: 'shipped' })
         
         const totalRevenue = await Order.aggregate([
+            { $match: { status: 'delivered', paymentId: { $exists: true, $ne: null } } },
             { $group: { _id: null, total: { $sum: '$totalAmount' } } }
         ])
         const totalRevenueAmount = totalRevenue.length > 0 ? totalRevenue[0].total : 0

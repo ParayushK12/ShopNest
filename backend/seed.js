@@ -5,6 +5,37 @@ import User from "./model/User.js";
 import Product from "./model/Product.js";
 import Order from "./model/Order.js";
 import connectDB from "./config/db.js";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const getProductsFromSeedData = (dir) => {
+  let products = [];
+  if (!fs.existsSync(dir)) {
+    console.warn(`Directory not found: ${dir}`);
+    return products;
+  }
+  const files = fs.readdirSync(dir);
+  for (const file of files) {
+    const filePath = path.join(dir, file);
+    const stat = fs.statSync(filePath);
+    if (stat.isDirectory()) {
+      products = products.concat(getProductsFromSeedData(filePath));
+    } else if (file === 'product.json') {
+      try {
+        const fileContent = fs.readFileSync(filePath, 'utf-8');
+        const product = JSON.parse(fileContent);
+        products.push(product);
+      } catch (err) {
+        console.error(`Error parsing ${filePath}: ${err.message}`);
+      }
+    }
+  }
+  return products;
+};
 
 const importData = async () => {
   try {
@@ -54,99 +85,14 @@ const importData = async () => {
 
     console.log("Users seeded successfully.");
 
-    // Sample Products
-    const sampleProducts = [
-      {
-        name: "Wireless Noise-Canceling Headphones",
-        price: 199.99,
-        description: "Premium over-ear wireless headphones with industry-leading active noise cancellation, built-in voice assistants, and up to 30 hours of battery life.",
-        category: "Electronics",
-        stock: 50,
-        imageURL: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-        rating: 4.8,
-        numReviews: 24,
-      },
-      {
-        name: "Smart Fitness Watch",
-        price: 129.50,
-        description: "Track your workouts, heart rate, sleep quality, and daily activities with this sleek water-resistant smartwatch featuring a 1.4-inch AMOLED display.",
-        category: "Electronics",
-        stock: 120,
-        imageURL: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-        rating: 4.5,
-        numReviews: 45,
-      },
-      {
-        name: "Ergonomic Mechanical Keyboard",
-        price: 89.99,
-        description: "Mechanical keyboard featuring tactile switches, customized RGB backlighting, and a comfortable wrist rest design for ultimate productivity and gaming.",
-        category: "Electronics",
-        stock: 45,
-        imageURL: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-        rating: 4.6,
-        numReviews: 18,
-      },
-      {
-        name: "Vintage Leather Backpack",
-        price: 79.99,
-        description: "Handcrafted genuine leather backpack with a dedicated 15-inch laptop compartment, multiple storage pockets, and adjustable shoulder straps.",
-        category: "Accessories",
-        stock: 30,
-        imageURL: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-        rating: 4.7,
-        numReviews: 15,
-      },
-      {
-        name: "Minimalist Slim Wallet",
-        price: 24.99,
-        description: "RFID-blocking front pocket minimalist card holder made of premium aircraft-grade aluminum and carbon fiber.",
-        category: "Accessories",
-        stock: 200,
-        imageURL: "https://images.unsplash.com/photo-1627123424574-724758594e93?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-        rating: 4.3,
-        numReviews: 50,
-      },
-      {
-        name: "Classic Unisex Denim Jacket",
-        price: 59.99,
-        description: "Timeless denim jacket made with 100% premium cotton, featuring a button closure, button cuffs, and two chest pockets.",
-        category: "Clothing",
-        stock: 80,
-        imageURL: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-        rating: 4.4,
-        numReviews: 32,
-      },
-      {
-        name: "Athletic Running Shoes",
-        price: 85.00,
-        description: "Lightweight and breathable mesh running shoes with responsive cushioning for maximum energy return and rubber outsole for durability.",
-        category: "Clothing",
-        stock: 65,
-        imageURL: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-        rating: 4.6,
-        numReviews: 28,
-      },
-      {
-        name: "Ceramic Drip Coffee Maker Set",
-        price: 34.99,
-        description: "Pour-over coffee brewer with a premium ceramic cone filter, matching glass carafe, and 50 paper filters included for a perfect morning brew.",
-        category: "Home & Kitchen",
-        stock: 40,
-        imageURL: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-        rating: 4.9,
-        numReviews: 12,
-      },
-      {
-        name: "Stainless Steel Insulated Tumbler",
-        price: 19.99,
-        description: "Double-walled vacuum insulated travel mug with a leak-proof lid, keeps drinks cold for up to 24 hours or hot for up to 12 hours.",
-        category: "Home & Kitchen",
-        stock: 150,
-        imageURL: "https://images.unsplash.com/photo-1577937927133-66ef06acdf18?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-        rating: 4.7,
-        numReviews: 60,
-      },
-    ];
+    // Sample Products loaded dynamically from seedData
+    const seedDataPath = path.join(__dirname, "../seedData");
+    const sampleProducts = getProductsFromSeedData(seedDataPath);
+    console.log(`Loaded ${sampleProducts.length} products from seedData.`);
+    
+    if (sampleProducts.length === 0) {
+      throw new Error("No products found in seedData folder.");
+    }
 
     const createdProducts = await Product.insertMany(sampleProducts);
     console.log("Products seeded successfully.");

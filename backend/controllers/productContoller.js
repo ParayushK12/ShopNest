@@ -1,6 +1,6 @@
 import Product from "../model/Product.js";
 import cloudinary from "../config/cloudinary.js";
-
+import fs from 'fs/promises';
 
 export const getproducts = async (req, res) => {
   try {
@@ -32,6 +32,7 @@ export const createProduct = async (req, res) => {
       const result = await cloudinary.uploader.upload(req.file.path);
       imageURL = result.secure_url;
     }
+    if (!imageURL) return res.status(422).json({ message: 'A product image is required.' });
     const product = new Product({
       name,
       price,
@@ -45,6 +46,8 @@ export const createProduct = async (req, res) => {
   } catch (error) {
     console.error("Error creating product:", error);
     res.status(500).json({ message: "Internal server error", error: error.message });
+  } finally {
+    if (req.file?.path) await fs.unlink(req.file.path).catch(() => {});
   }
 };
 
@@ -53,35 +56,34 @@ export const updateProduct = async (req, res) => {
   const { name, price, description, category, stock } = req.body;
   let imageURL = "";
   try {
-    // Find the existing product first
     const existingProduct = await Product.findById(id);
     if (!existingProduct) {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    // Upload new image if provided
     if (req.file) {
       const result = await cloudinary.uploader.upload(req.file.path);
       imageURL = result.secure_url;
     }
 
-    // Update only changed fields
     const product = await Product.findByIdAndUpdate(
       id,
       {
-        name: name || existingProduct.name,
-        price: price || existingProduct.price,
-        description: description || existingProduct.description,
-        category: category || existingProduct.category,
-        stock: stock || existingProduct.stock,
+        name: name ?? existingProduct.name,
+        price: price ?? existingProduct.price,
+        description: description ?? existingProduct.description,
+        category: category ?? existingProduct.category,
+        stock: stock ?? existingProduct.stock,
         imageURL: imageURL || existingProduct.imageURL,
       },
-      { new: true },
+      { new: true }
     );
 
     res.json(product);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
+  } finally {
+    if (req.file?.path) await fs.unlink(req.file.path).catch(() => {});
   }
 };
 
