@@ -108,8 +108,7 @@ export const registerUser = async (req, res) => {
 
     if (user) {
       const message = getOTPEmailTemplate(user.name, otp);
-
-      await sendMail(user.email, "OTP for registration", message);
+      sendMail(user.email, "OTP for registration", message);
 
       res.status(201).json({
         message: "Registration successful. Please verify your email with the OTP sent to your inbox.",
@@ -138,8 +137,7 @@ export const loginUser = async(req, res) => {
                 await user.save();
 
                 const message = getOTPEmailTemplate(user.name, otp);
-
-                await sendMail(user.email, "OTP for registration", message);
+                sendMail(user.email, "OTP for registration", message);
 
                 return res.status(401).json({
                     message: "Please verify your email address first. An OTP has been sent.",
@@ -186,7 +184,7 @@ export const contactSupport = async (req, res) => {
       <p>${message.replace(/\n/g, '<br>')}</p>
     `;
 
-    await sendMail(adminEmail, subject, emailBody);
+    sendMail(adminEmail, subject, emailBody);
     res.status(200).json({ message: "Support request sent successfully" });
   } catch (error) {
     console.error("Error sending support request:", error);
@@ -253,7 +251,7 @@ export const resendOTP = async (req, res) => {
 
     const message = getOTPEmailTemplate(user.name, otp);
 
-    await sendMail(user.email, "OTP for registration", message);
+    sendMail(user.email, "OTP for registration", message);
 
     res.status(200).json({ message: "OTP resent successfully" });
   } catch (error) {
