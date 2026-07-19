@@ -64,11 +64,22 @@ const Checkout = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${user.token}`,
                 },
                 body: JSON.stringify({ amount: finalTotal }),
             });
 
             if (!res.ok) {
+                if (res.status === 401) {
+                    const errorData = await res.json();
+                    if (errorData.message && errorData.message.toLowerCase().includes("verify")) {
+                        setError("Please verify your email address first. Redirecting to verification...");
+                        setTimeout(() => {
+                            navigate(`/register?verify=true&email=${encodeURIComponent(user.email)}&redirect=/checkout`);
+                        }, 2000);
+                        return;
+                    }
+                }
                 throw new Error("Unable to create Razorpay payment order. Try again.");
             }
 
@@ -98,6 +109,7 @@ const Checkout = () => {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json",
+                                "Authorization": `Bearer ${user.token}`,
                             },
                             body: JSON.stringify({
                                 razorpay_order_id: response.razorpay_order_id,
@@ -109,6 +121,13 @@ const Checkout = () => {
                         const verificationData = await verifyRes.json();
 
                         if (!verifyRes.ok) {
+                            if (verifyRes.status === 401 && verificationData.message && verificationData.message.toLowerCase().includes("verify")) {
+                                setError("Please verify your email address first. Redirecting to verification...");
+                                setTimeout(() => {
+                                    navigate(`/register?verify=true&email=${encodeURIComponent(user.email)}&redirect=/checkout`);
+                                }, 2000);
+                                return;
+                            }
                             throw new Error(verificationData.message || "Payment verification failed.");
                         }
 

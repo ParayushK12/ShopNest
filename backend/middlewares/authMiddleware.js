@@ -7,7 +7,14 @@ const protect = async(req,res,next) => {
         try {
             token = req.headers.authorization.split(' ')[1];
             const decoded = jwt.verify(token,process.env.JWT_SECRET)
-            req.user = await User.findById(decoded.id).select('-password')
+            const user = await User.findById(decoded.id).select('-password')
+            if (!user) {
+                return res.status(401).json({message: 'User not found.'})
+            }
+            if (!user.verified) {
+                return res.status(401).json({message: 'Please verify your email address first.'})
+            }
+            req.user = user;
             next();
         } catch (error) {
             return res.status(401).json({message: 'Your session is invalid or has expired. Please sign in again.'})

@@ -40,6 +40,10 @@ const Login = () => {
             const data = await res.json();
 
             if (!res.ok) {
+                if (res.status === 401 && data.unverified) {
+                    navigate(`/register?verify=true&email=${encodeURIComponent(data.email)}&redirect=${encodeURIComponent(redirect)}`);
+                    return;
+                }
                 throw new Error(data.message || "Invalid credentials. Please try again.");
             }
 

@@ -90,6 +90,19 @@ export const supportSchema = {
   }),
 };
 
+export const verifyOtpSchema = {
+  body: z.object({
+    email: z.string().trim().email("Invalid email format"),
+    otp: z.string().trim().length(6, "OTP must be exactly 6 digits"),
+  }),
+};
+
+export const resendOtpSchema = {
+  body: z.object({
+    email: z.string().trim().email("Invalid email format"),
+  }),
+};
+
 // Products
 export const productIdParamSchema = {
   params: z.object({
