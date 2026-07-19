@@ -1,5 +1,5 @@
 import Product from "../model/Product.js";
-import { v2 as cloudinary } from "cloudinary";
+import cloudinary from "../config/cloudinary.js";
 
 
 export const getproducts = async (req, res) => {
@@ -38,12 +38,13 @@ export const createProduct = async (req, res) => {
       description,
       category,
       stock,
-      image,
+      imageURL,
     });
     await product.save();
     res.status(201).json(product);
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error creating product:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
 
@@ -73,7 +74,7 @@ export const updateProduct = async (req, res) => {
         description: description || existingProduct.description,
         category: category || existingProduct.category,
         stock: stock || existingProduct.stock,
-        image: imageURL || existingProduct.image,
+        imageURL: imageURL || existingProduct.imageURL,
       },
       { new: true },
     );

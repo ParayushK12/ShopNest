@@ -1,10 +1,12 @@
+import 'dotenv/config';
 import express from 'express'
 import cors from 'cors'
-import dotenv from 'dotenv'
+
 import connectDB from './config/db.js';
+import './config/cloudinary.js';
 import userRoutes from './routes/authRoutes.js'
 import productRoutes from './routes/productRoutes.js'
-dotenv.config();
+import orderRoutes from './routes/orderRoutes.js'
 
 connectDB()
 
@@ -19,7 +21,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth',userRoutes)
 app.use('/api/products',productRoutes)
-// app.use('/api/orders',orderRoutes)
+app.use('/api/orders',orderRoutes)
 // app.use('/api/payment',paymentRoutes)
 // app.use('/api/analytics',analyticsRoutes)
 
